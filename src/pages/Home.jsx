@@ -12,7 +12,7 @@ function Home({ user, isAuthenticated }) {
       username: "user1",
       title: "Beautiful sunset",
       description: "Captured this amazing sunset at the beach.",
-      imageUrl: "src/assets/download_1.jpeg",
+      imageUrl: "assets/download_1.jpeg",
       likes: ["user2"],
       comments: [
         {
@@ -31,7 +31,7 @@ function Home({ user, isAuthenticated }) {
       username: "user2",
       title: "My new plant",
       description: "Just added this beauty to my collection.",
-      imageUrl: "src/assets/download_2.jpeg",
+      imageUrl: "assets/download_2.jpeg",
       likes: [],
       comments: [],
       createdAt: "2025-03-28T17:00:00Z",
