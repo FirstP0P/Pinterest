@@ -1,7 +1,6 @@
 import React from "react";
 import { useAuth } from "react-oidc-context";
 import "./navbar.css";
-import pinterestLogo from "../../assets/pinterest_logo.png";
 
 const Navbar = ({ signIn, signOut }) => {
   const auth = useAuth();
@@ -9,7 +8,7 @@ const Navbar = ({ signIn, signOut }) => {
   return (
     <nav className="navbar">
       <div className="navbar-logo">
-        <img src={pinterestLogo} alt="Pinterest" />
+        <img src="assets/pinterest_logo.png" alt="Pinterest" />
       </div>
 
       <ul className="navbar-links">
