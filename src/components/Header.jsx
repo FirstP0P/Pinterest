@@ -2,20 +2,9 @@ import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { useAuth } from "react-oidc-context";
 
-function Header({ signOut, user, isAuthenticated, onLogin }) {
-  const [username, setUsername] = useState('');
-  const [showLoginForm, setShowLoginForm] = useState(false);
-
+function Header({ signOut, user}) {
   const auth = useAuth();
 
-  const handleLogin = (e) => {
-    e.preventDefault();
-    if (username.trim()) {
-      onLogin(username);
-      setUsername('');
-      setShowLoginForm(false);
-    }
-  };
 
   return (
     <header className="header">
@@ -32,24 +21,14 @@ function Header({ signOut, user, isAuthenticated, onLogin }) {
           <>
             <Link to="/" className="nav-link">Home</Link>
             <Link to="/profile" className="nav-link">Profile</Link>
-            <span className="user-info">Hello, {user.username}</span>
+            <span className="user-info">Hello, user</span>
             <button onClick={signOut}>Sign out</button>
+            {/* <button onClick={() => auth.signinRedirect()}>Login</button> */}
           </>
         ) : (
-          <>
-            {showLoginForm ? (
-              <form onSubmit={handleLogin} className="login-form">
-                <input
-                  type="text"
-                  value={username}
-                  onChange={(e) => setUsername(e.target.value)}
-                  placeholder="Username"
-                />
-                <button onClick={() => auth.signinRedirect()}>Sign in</button>
-              </form>
-            ) : (
-              <button onClick={() => setShowLoginForm(true)}>Login</button>
-            )}
+          <> 
+              <button onClick={() => auth.signinRedirect()}>Login</button>
+              {/* <button onClick={signOut}>Sign out</button> */}
           </>
         )}
       </nav>
