@@ -1,9 +1,12 @@
-import { useState } from 'react';
+import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
+import { useAuth } from "react-oidc-context";
 
-function Header({ user, isAuthenticated, onLogin }) {
+function Header({ signOut, user, isAuthenticated, onLogin }) {
   const [username, setUsername] = useState('');
   const [showLoginForm, setShowLoginForm] = useState(false);
+
+  const auth = useAuth();
 
   const handleLogin = (e) => {
     e.preventDefault();
@@ -25,11 +28,12 @@ function Header({ user, isAuthenticated, onLogin }) {
       </div>
 
       <nav className="header-nav">
-        {isAuthenticated ? (
+        {auth.isAuthenticated ? (
           <>
             <Link to="/" className="nav-link">Home</Link>
             <Link to="/profile" className="nav-link">Profile</Link>
             <span className="user-info">Hello, {user.username}</span>
+            <button onClick={signOut}>Sign out</button>
           </>
         ) : (
           <>
@@ -41,7 +45,7 @@ function Header({ user, isAuthenticated, onLogin }) {
                   onChange={(e) => setUsername(e.target.value)}
                   placeholder="Username"
                 />
-                <button type="submit">Login</button>
+                <button onClick={() => auth.signinRedirect()}>Sign in</button>
               </form>
             ) : (
               <button onClick={() => setShowLoginForm(true)}>Login</button>
