@@ -22,3 +22,5 @@ root.render(
     <AuthProvider {...cognitoAuthConfig}>
       <App />
     </AuthProvider>
+  </React.StrictMode>
+);
