@@ -16,11 +16,7 @@ function Profile({ user, isAuthenticated }) {
         username: user.username,
         title: "My workspace",
         description: "Where the magic happens.",
-<<<<<<< Updated upstream
-        imageUrl: "/api/placeholder/500/400",
-=======
         imageUrl: "assets/download_1.jpeg",
->>>>>>> Stashed changes
         likes: ["user1"],
         comments: [
           {
