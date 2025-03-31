@@ -2,7 +2,12 @@ import { useState, useEffect } from "react";
 import Header from "./components/Header";
 import React from "react";
 import { useState } from "react";
+import { useState } from "react";
 import { useAuth } from "react-oidc-context";
+import Navbar from "./components/Navbar/Navbar";
+import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
+import Home from "./pages/Home";
+import Profile from "./pages/Profile";
 import "./App.css";
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import Home from "./pages/Home";
@@ -47,7 +52,15 @@ function App() {
   return (
     <Router>
       <div className="app">
+    <Router>
+      <div className="app">
       <Navbar signIn={signIn} signOut={signOut} />
+      <Routes>
+          <Route path="/" element={<Home user={user} />} />
+          <Route path="/profile" element={<Profile user={user} />} />
+        </Routes>
+      </div>
+    </Router>
       <Routes>
           <Route path="/" element={<Home user={user} />} />
           <Route path="/profile" element={<Profile user={user} />} />
