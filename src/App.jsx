@@ -1,8 +1,13 @@
 import { useState, useEffect } from "react";
 import Header from "./components/Header";
 import React from "react";
+import { useState } from "react";
 import { useAuth } from "react-oidc-context";
+<<<<<<< Updated upstream
 import "./App.css";
+=======
+import Navbar from "./components/Navbar/Navbar";
+>>>>>>> Stashed changes
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import Home from "./pages/Home";
 import Profile from "./pages/Profile";
@@ -42,11 +47,18 @@ function App() {
 
   const [user, setUser] = useState(null);
 
+  const [user, setUser] = useState(null);
+
   return (
     <Router>
       <div className="app">
+<<<<<<< Updated upstream
         <Header signOut={signOut} user={user} />
         <Routes>
+=======
+      <Navbar signIn={signIn} signOut={signOut} />
+      <Routes>
+>>>>>>> Stashed changes
           <Route path="/" element={<Home user={user} />} />
           <Route path="/profile" element={<Profile user={user} />} />
         </Routes>
