@@ -1,10 +1,11 @@
 import React from "react";
 import { useAuth } from "react-oidc-context";
 import Navbar from "./components/Navbar/Navbar";
-import { Amplify } from "aws-amplify";
-import awsExports from "./aws-exports";
+import Home from "./pages/Home";
+// import { Amplify } from "aws-amplify";
+// import awsExports from "./aws-exports";
 
-Amplify.configure(awsExports);
+// Amplify.configure(awsExports);
 
 function App() {
   const auth = useAuth();
@@ -32,6 +33,7 @@ function App() {
   return (
     <div>
       <Navbar signIn={signIn} signOut={signOut} />
+      <Home />
     </div>
   );
 }
