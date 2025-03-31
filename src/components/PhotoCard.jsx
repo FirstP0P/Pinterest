@@ -1,4 +1,6 @@
-import { useState } from "react";
+import React, { useState } from "react";
+import { FaHeart, FaRegHeart, FaComment, FaEllipsisH } from "react-icons/fa";
+import "./PhotoCard.css";
 
 function PhotoCard({ photo, user }) {
   const [liked, setLiked] = useState(photo.likes.includes(user?.id));
@@ -30,8 +32,8 @@ function PhotoCard({ photo, user }) {
     // For now, let's just update the local state
     photo.comments.push({
       id: Date.now().toString(),
-      userId: user.id,
-      username: user.username,
+      userId: user?.id || "anonymous",
+      username: user?.username || "anonymous",
       text: comment,
       createdAt: new Date().toISOString(),
     });
@@ -41,37 +43,66 @@ function PhotoCard({ photo, user }) {
 
   return (
     <div className="photo-card">
-      <img src={photo.imageUrl} alt={photo.title} className="photo-image" />
+      <div className="photo-image-container">
+        <img src={photo.imageUrl} alt={photo.title} className="photo-image" />
+        <div className="photo-overlay">
+          <div className="overlay-actions">
+            <button className="save-button">Save</button>
+            <button className="more-options">
+              <FaEllipsisH />
+            </button>
+          </div>
+        </div>
+      </div>
 
       <div className="photo-info">
-        <h3>{photo.title}</h3>
+        <h3 className="photo-title">{photo.title}</h3>
         <p className="photo-description">{photo.description}</p>
 
-        <div className="photo-actions">
-          <button
-            className={`like-button ${liked ? "liked" : ""}`}
-            onClick={handleLike}
-          >
-            ♥ {likesCount}
-          </button>
+        <div className="photo-meta">
+          <div className="photo-author">
+            <div className="author-avatar">{photo.username.charAt(0).toUpperCase()}</div>
+            <span className="author-name">{photo.username}</span>
+          </div>
 
-          <button
-            className="comment-button"
-            onClick={() => setShowComments(!showComments)}
-          >
-            💬 {photo.comments.length}
-          </button>
+          <div className="photo-actions">
+            <button
+              className={`action-button like-button ${liked ? "liked" : ""}`}
+              onClick={handleLike}
+            >
+              {liked ? <FaHeart /> : <FaRegHeart />}
+              <span>{likesCount}</span>
+            </button>
+
+            <button
+              className="action-button comment-button"
+              onClick={() => setShowComments(!showComments)}
+            >
+              <FaComment />
+              <span>{photo.comments.length}</span>
+            </button>
+          </div>
         </div>
 
         {showComments && (
           <div className="comments-section">
-            <h4>Comments</h4>
+            <h4 className="comments-title">Comments</h4>
 
-            {photo.comments.map((comment) => (
-              <div key={comment.id} className="comment">
-                <strong>{comment.username}</strong>: {comment.text}
-              </div>
-            ))}
+            <div className="comments-list">
+              {photo.comments.length > 0 ? (
+                photo.comments.map((comment) => (
+                  <div key={comment.id} className="comment">
+                    <div className="comment-avatar">{comment.username.charAt(0).toUpperCase()}</div>
+                    <div className="comment-content">
+                      <strong className="comment-username">{comment.username}</strong>
+                      <p className="comment-text">{comment.text}</p>
+                    </div>
+                  </div>
+                ))
+              ) : (
+                <p className="no-comments">No comments yet</p>
+              )}
+            </div>
 
             {user && (
               <form onSubmit={handleComment} className="comment-form">
@@ -80,8 +111,9 @@ function PhotoCard({ photo, user }) {
                   value={comment}
                   onChange={(e) => setComment(e.target.value)}
                   placeholder="Add a comment..."
+                  className="comment-input"
                 />
-                <button type="submit">Post</button>
+                <button type="submit" className="comment-submit">Post</button>
               </form>
             )}
           </div>

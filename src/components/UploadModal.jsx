@@ -1,97 +1,146 @@
-import { useState } from "react";
+import React, { useState } from "react";
+import { FaImage, FaTimes } from "react-icons/fa";
+import "./UploadModal.css";
 
 function UploadModal({ user, onClose, onUpload }) {
   const [title, setTitle] = useState("");
   const [description, setDescription] = useState("");
-  const [imageFile, setImageFile] = useState(null);
+  const [file, setFile] = useState(null);
   const [previewUrl, setPreviewUrl] = useState("");
+  const [isUploading, setIsUploading] = useState(false);
 
   const handleFileChange = (e) => {
-    const file = e.target.files[0];
-    if (!file) return;
+    const selectedFile = e.target.files[0];
+    if (!selectedFile) return;
 
-    setImageFile(file);
-
-    // Create a preview
-    const reader = new FileReader();
-    reader.onloadend = () => {
-      setPreviewUrl(reader.result);
-    };
-    reader.readAsDataURL(file);
+    setFile(selectedFile);
+    setPreviewUrl(URL.createObjectURL(selectedFile));
   };
 
-  const handleSubmit = (e) => {
+  const handleUpload = async (e) => {
     e.preventDefault();
-    if (!title.trim() || !imageFile) return;
+    if (!file || !title.trim()) {
+      return alert("Please select a file and add a title!");
+    }
 
-    // Here you would upload to your backend
-    // In a real app, you'd use FormData and fetch/axios
+    setIsUploading(true);
 
-    // For now, let's simulate it with a local object
-    const newPhoto = {
-      id: Date.now().toString(),
-      userId: user.id,
-      username: user.username,
-      title,
-      description,
-      imageUrl: previewUrl, // In a real app, this would be the URL from your server
-      likes: [],
-      comments: [],
-      createdAt: new Date().toISOString(),
-    };
-
-    onUpload(newPhoto);
-    onClose();
+    const formData = new FormData();
+    formData.append("file", file);
+    
+    try {
+      const response = await fetch("http://localhost:5000/upload", {
+        method: "POST",
+        body: formData,
+      });
+      
+      const data = await response.json();
+      
+      if (data.success) {
+        // Create new photo object with uploaded file URL
+        const newPhoto = {
+          id: Date.now().toString(),
+          userId: user?.id || "anonymous",
+          username: user?.username || "anonymous",
+          title,
+          description,
+          imageUrl: data.fileUrl, // Use the URL returned from server
+          likes: [],
+          comments: [],
+          createdAt: new Date().toISOString(),
+        };
+        
+        onUpload(newPhoto);
+      } else {
+        alert("Upload failed");
+      }
+    } catch (error) {
+      console.error("Upload Error:", error);
+      alert("Error uploading file. Please try again.");
+    } finally {
+      setIsUploading(false);
+    }
   };
 
   return (
     <div className="modal-overlay">
       <div className="upload-modal">
-        <h2>Upload a Photo</h2>
-
-        <form onSubmit={handleSubmit}>
-          <div className="form-group">
-            <label htmlFor="title">Title</label>
-            <input
-              id="title"
-              type="text"
-              value={title}
-              onChange={(e) => setTitle(e.target.value)}
-              required
-            />
-          </div>
-
-          <div className="form-group">
-            <label htmlFor="description">Description</label>
-            <textarea
-              id="description"
-              value={description}
-              onChange={(e) => setDescription(e.target.value)}
-            />
-          </div>
-
-          <div className="form-group">
-            <label htmlFor="image">Image</label>
-            <input
-              id="image"
-              type="file"
-              accept="image/*"
-              onChange={handleFileChange}
-              required
-            />
-          </div>
-
-          {previewUrl && (
-            <div className="image-preview">
-              <img src={previewUrl} alt="Preview" />
+        <button className="close-button" onClick={onClose}>
+          <FaTimes />
+        </button>
+        
+        <h2 className="modal-title">Create a Pin</h2>
+        
+        <form onSubmit={handleUpload} className="upload-form">
+          <div className="form-grid">
+            <div className="image-upload-section">
+              {previewUrl ? (
+                <div className="image-preview-container">
+                  <img src={previewUrl} alt="Preview" className="image-preview" />
+                </div>
+              ) : (
+                <div className="upload-placeholder">
+                  <FaImage className="upload-icon" />
+                  <p>Drag and drop or click to upload</p>
+                  <span className="file-hint">Recommendation: Use high-quality .jpg files</span>
+                </div>
+              )}
+              
+              <input
+                type="file"
+                accept="image/*"
+                onChange={handleFileChange}
+                className="file-input"
+                id="file-input"
+              />
+              <label htmlFor="file-input" className="file-input-label">
+                Select file
+              </label>
             </div>
-          )}
-
-          <div className="modal-actions">
-            <button type="button" onClick={onClose}>
-              Cancel
-            </button>
-            <button type="submit">Upload</button>
+            
+            <div className="form-fields">
+              <div className="form-group">
+                <label htmlFor="title">Title</label>
+                <input
+                  type="text"
+                  id="title"
+                  value={title}
+                  onChange={(e) => setTitle(e.target.value)}
+                  placeholder="Add your title"
+                  required
+                  className="form-control"
+                />
+              </div>
+              
+              <div className="form-group">
+                <label htmlFor="description">Description</label>
+                <textarea
+                  id="description"
+                  value={description}
+                  onChange={(e) => setDescription(e.target.value)}
+                  placeholder="Tell everyone what your Pin is about"
+                  className="form-control"
+                  rows="4"
+                />
+              </div>
+              
+              <div className="form-actions">
+                <button
+                  type="submit"
+                  className="submit-button"
+                  disabled={!file || !title.trim() || isUploading}
+                >
+                  {isUploading ? "Uploading..." : "Create Pin"}
+                </button>
+                <button 
+                  type="button" 
+                  className="cancel-button"
+                  onClick={onClose}
+                >
+                  Cancel
+                </button>
+              </div>
+            </div>
           </div>
         </form>
       </div>

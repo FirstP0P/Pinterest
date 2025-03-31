@@ -1,11 +1,10 @@
 import React from "react";
 import { useAuth } from "react-oidc-context";
+import { BrowserRouter as Router, Routes, Route, Navigate } from "react-router-dom";
 import Navbar from "./components/Navbar/Navbar";
 import Home from "./pages/Home";
-// import { Amplify } from "aws-amplify";
-// import awsExports from "./aws-exports";
-
-// Amplify.configure(awsExports);
+import Profile from "./pages/Profile";
+import "./App.css";
 
 function App() {
   const auth = useAuth();
@@ -19,22 +18,31 @@ function App() {
 
     const clientId = "f2gt4v2ut7bn16tl7ctbunu6e"; // Replace with your Cognito App Client ID
     const logoutUri = "http://localhost:5173/";
-    const cognitoDomain =
-      "https://us-east-1brgr5kgvm.auth.us-east-1.amazoncognito.com";
+    const cognitoDomain = "https://us-east-1brgr5kgvm.auth.us-east-1.amazoncognito.com";
 
     window.location.href = `${cognitoDomain}/logout?client_id=${clientId}&logout_uri=${encodeURIComponent(
       logoutUri
     )}`;
   };
 
-  if (auth.isLoading) return <div>Loading...</div>;
-  if (auth.error) return <div>Oops... {auth.error.message}</div>;
+  if (auth.isLoading) return <div className="loading-container">Loading...</div>;
+  if (auth.error) return <div className="error-container">Oops... {auth.error.message}</div>;
 
   return (
-    <div>
-      <Navbar signIn={signIn} signOut={signOut} />
-      <Home />
-    </div>
+    <Router>
+      <div className="app-container">
+        <Navbar signIn={signIn} signOut={signOut} />
+        <div className="content-container">
+          <Routes>
+            <Route path="/" element={<Home user={auth.user} isAuthenticated={auth.isAuthenticated} />} />
+            <Route 
+              path="/profile" 
+              element={auth.isAuthenticated ? <Profile user={auth.user} /> : <Navigate to="/" />} 
+            />
+          </Routes>
+        </div>
+      </div>
+    </Router>
   );
 }
 

@@ -1,13 +1,15 @@
 import { S3Client, PutObjectCommand } from "@aws-sdk/client-s3";
+import { PutCommand } from "@aws-sdk/lib-dynamodb";
 import dotenv from "dotenv";
 import crypto from "crypto";
 import multer from "multer";
+import { dynamodb } from "./dynamodb.js";
+import { ScanCommand } from "@aws-sdk/lib-dynamodb";
 
-dotenv.config(); // Load environment variables
+dotenv.config();
 
-// AWS S3 Config
 const s3 = new S3Client({
-  region: process.env.VITE_AWS_REGION, // Example: "eu-north-1"
+  region: process.env.VITE_AWS_REGION,
   endpoint: `https://s3.${process.env.VITE_AWS_REGION}.amazonaws.com`,
   credentials: {
     accessKeyId: process.env.VITE_AWS_ACCESS_KEY_ID,
@@ -15,11 +17,10 @@ const s3 = new S3Client({
   },
 });
 
-// Multer middleware for file uploads
 const storage = multer.memoryStorage();
 const upload = multer({ storage });
 
-export async function uploadToS3(file) {
+export async function uploadToS3(file, postData) {
   try {
     if (!file) throw new Error("No file provided");
 
@@ -36,19 +37,53 @@ export async function uploadToS3(file) {
     };
 
     await s3.send(new PutObjectCommand(params));
+    const fileUrl = `https://${process.env.VITE_AWS_BUCKET_NAME}.s3.${process.env.VITE_AWS_REGION}.amazonaws.com/${uniqueName}`;
+
+    // Insert into DynamoDB
+    const postItem = {
+      id: crypto.randomUUID(), // Unique post ID
+      userId: postData.userId,
+      username: postData.username,
+      title: postData.title,
+      description: postData.description,
+      imageUrl: fileUrl,
+      likes: postData.likes || [],
+      comments: postData.comments || [],
+      createdAt: new Date().toISOString(),
+    };
+
+    await dynamodb.send(
+      new PutCommand({
+        TableName: "Posts",
+        Item: postItem,
+      })
+    );
 
     return {
       success: true,
-      fileUrl: `https://${process.env.VITE_AWS_BUCKET_NAME}.s3.${process.env.VITE_AWS_REGION}.amazonaws.com/${uniqueName}`,
-      filename: uniqueName,
+      fileUrl,
+      postId: postItem.id,
     };
   } catch (error) {
-    console.error("S3 Upload Error:", error);
-    console.log("Bucket Name:", process.env.VITE_AWS_BUCKET_NAME);
-    throw new Error("Upload failed");
+    console.error("Error:", error);
+    throw new Error("Upload or database insert failed");
   }
 }
 
 export function uploadMiddleware() {
   return upload.single("file");
+}
+
+export async function getPosts() {
+  try {
+    const data = await dynamodb.send(
+      new ScanCommand({
+        TableName: "Posts",
+      })
+    );
+    return data.Items;
+  } catch (error) {
+    console.error("Error fetching posts:", error);
+    throw new Error("Failed to fetch posts");
+  }
 }

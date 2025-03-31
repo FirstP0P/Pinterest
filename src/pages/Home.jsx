@@ -1,45 +1,65 @@
-import { useState } from "react";
+import React, { useState, useEffect } from "react";
 import PhotoGrid from "../components/PhotoGrid";
 import UploadModal from "../components/UploadModal";
+import "./Home.css";
 
 function Home({ user, isAuthenticated }) {
   const [showUploadModal, setShowUploadModal] = useState(false);
-  const [photos, setPhotos] = useState([
-    // Sample data
-    {
-      id: "1",
-      userId: "user1",
-      username: "user1",
-      title: "Beautiful sunset",
-      description: "Captured this amazing sunset at the beach.",
-      imageUrl: "assets/download_1.jpeg",
-      likes: ["user2"],
-      comments: [
-        {
-          id: "1",
-          userId: "user2",
-          username: "user2",
-          text: "Gorgeous!",
-          createdAt: "2025-03-28T18:30:00Z",
-        },
-      ],
-      createdAt: "2025-03-28T18:00:00Z",
-    },
-    {
-      id: "2",
-      userId: "user2",
-      username: "user2",
-      title: "My new plant",
-      description: "Just added this beauty to my collection.",
-      imageUrl: "assets/download_2.jpeg",
-      likes: [],
-      comments: [],
-      createdAt: "2025-03-28T17:00:00Z",
-    },
-  ]);
+  const [photos, setPhotos] = useState([""]);
+  
+  const fetchPosts = async () => {
+    try {
+      const response = await fetch("http://localhost:5000/posts", {
+        method: "GET",
+      });
+      
+      const data = await response.json();
+      
+      if (data.success) {
+        setPhotos(data);
+      
+      } else {
+        alert("Fetch failed");
+      }
+    } catch (error) {
+      console.error("Fetch Error:", error);
+      alert("Error Fetching file. Please try again.");
+    }
+  };
+
+  
+  
+
+  // const [photos, setPhotos] = useState([
+  //   // Add more sample data for better grid display
+  //   {
+  //     id: "3",
+  //     userId: "user3",
+  //     username: "travelgram",
+  //     title: "Mountain hiking",
+  //     description: "Weekend adventure in the Alps",
+  //     imageUrl: "https://images.unsplash.com/photo-1464822759023-fed622ff2c3b",
+  //     likes: ["user1", "user4"],
+  //     comments: [],
+  //     createdAt: "2025-03-27T10:00:00Z",
+  //   },
+  //   {
+  //     id: "4",
+  //     userId: "user4",
+  //     username: "foodie",
+  //     title: "Homemade pasta",
+  //     description: "First attempt at making fresh pasta from scratch",
+  //     imageUrl: "https://images.unsplash.com/photo-1556761175-b413da4baf72",
+  //     likes: ["user2"],
+  //     comments: [],
+  //     createdAt: "2025-03-26T19:15:00Z",
+  //   },
+  // ]);
 
   const handleUpload = (newPhoto) => {
-    setPhotos([newPhoto, ...photos]);
+//    setPhotos([newPhoto, ...photos]);
+    fetchPosts();
+    setShowUploadModal(false);
   };
 
   return (
@@ -50,12 +70,13 @@ function Home({ user, isAuthenticated }) {
             className="upload-button"
             onClick={() => setShowUploadModal(true)}
           >
-            + Upload Photo
+            <span className="plus-icon">+</span> Create Pin
           </button>
         </div>
       )}
 
-      <PhotoGrid photos={photos} user={user} />
+      { photos.length > 1 ? (<PhotoGrid photos={photos} user={user} />) : ("")};
+      
 
       {showUploadModal && (
         <UploadModal
