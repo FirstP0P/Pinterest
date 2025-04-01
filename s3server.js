@@ -10,7 +10,7 @@ dotenv.config();
 
 const s3 = new S3Client({
   region: process.env.VITE_AWS_REGION,
-  endpoint: `https://s3.${process.env.VITE_AWS_REGION}.amazonaws.com`,
+  //endpoint: `https://s3.${process.env.VITE_AWS_REGION}.amazonaws.com`,
   credentials: {
     accessKeyId: process.env.VITE_AWS_ACCESS_KEY_ID,
     secretAccessKey: process.env.VITE_AWS_SECRET_ACCESS_KEY,

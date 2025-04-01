@@ -56,13 +56,12 @@ function PhotoCard({ photo, user }) {
       </div>
 
       <div className="photo-info">
-        <h3 className="photo-title">{photo.title}</h3>
-        <p className="photo-description">{photo.description}</p>
+        <h3 className="photo-title">{photo.id}</h3>
+        <p className="photo-description">{photo.createdAt}</p>
 
         <div className="photo-meta">
           <div className="photo-author">
-            <div className="author-avatar">{photo.username.charAt(0).toUpperCase()}</div>
-            <span className="author-name">{photo.username}</span>
+    
           </div>
 
           <div className="photo-actions">

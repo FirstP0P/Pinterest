@@ -14,12 +14,13 @@ function Home({ user, isAuthenticated }) {
       });
       
       const data = await response.json();
+     // console.log(data);
       
       if (data.success) {
         setPhotos(data);
       
       } else {
-        alert("Fetch failed");
+        setPhotos(data);
       }
     } catch (error) {
       console.error("Fetch Error:", error);
@@ -28,7 +29,9 @@ function Home({ user, isAuthenticated }) {
   };
 
   
-  
+  useEffect(() => {
+    fetchPosts();
+  }, []);  
 
   // const [photos, setPhotos] = useState([
   //   // Add more sample data for better grid display

@@ -1,12 +1,7 @@
 import express from "express";
-import multer from "multer";
-//import { uploadToS3, uploadMiddleware } from "./s3server.js";
 import { uploadToS3, uploadMiddleware, getPosts } from "./s3server.js";
 import cors from "cors";
 
-// Multer middleware (for handling file uploads)
-const storage = multer.memoryStorage();
-const upload = multer({ storage });
 
 const app = express();
 const PORT = process.env.PORT || 5000;
@@ -38,6 +33,7 @@ app.get("/posts", async (req, res) => {
   try {
     const posts = await getPosts();
     res.status(200).json(posts);
+   // console.log(posts);
   } catch (error) {
     res.status(500).json({ error: error.message });
   }
