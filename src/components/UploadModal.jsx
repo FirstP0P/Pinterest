@@ -29,13 +29,13 @@ function UploadModal({ user, onClose, onUpload }) {
     formData.append("file", file);
     formData.append("title", title);
     formData.append("description", description);  
-    formData.append("userId", user?.id || "anonymous");
-    formData.append("username", user?.username || "anonymous");
+    formData.append("userId", user?.profile["sub"] || "anonymous");
+    formData.append("username", user?.profile["cognito:username"] || "anonymous");
     formData.append("createdAt", new Date().toISOString());
     formData.append("likes", JSON.stringify([]));
     formData.append("comments", JSON.stringify([]));
   
-    
+    console.log("Form Data:", formData);
     try {
       const response = await fetch("http://localhost:5000/upload", {
         method: "POST",

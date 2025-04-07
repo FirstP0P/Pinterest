@@ -37,7 +37,7 @@ function App() {
             <Route path="/" element={<Home user={auth.user} isAuthenticated={auth.isAuthenticated} />} />
             <Route 
               path="/profile" 
-              element={auth.isAuthenticated ? <Profile user={auth.user} /> : <Navigate to="/" />} 
+              element={auth.isAuthenticated ? <Profile user={auth.user} isAuthenticated={auth.isAuthenticated} /> : <Navigate to="/" />} 
             />
           </Routes>
         </div>

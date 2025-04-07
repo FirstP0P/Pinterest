@@ -18,9 +18,11 @@ function Home({ user, isAuthenticated }) {
       
       if (data.success) {
         setPhotos(data);
+       // console.log("Photos:", photos);
       
       } else {
         setPhotos(data);
+        //console.log("Photos:", data);
       }
     } catch (error) {
       console.error("Fetch Error:", error);
@@ -31,6 +33,7 @@ function Home({ user, isAuthenticated }) {
   
   useEffect(() => {
     fetchPosts();
+    
   }, []);  
 
   const handleUpload = (newPhoto) => {
@@ -52,7 +55,7 @@ function Home({ user, isAuthenticated }) {
         </div>
       )}
 
-      { photos.length > 1 ? (<PhotoGrid photos={photos} user={user} />) : ("")};
+      { photos.length > 0 ? (<PhotoGrid photos={photos} user={user} />) : ("")};
       
 
       {showUploadModal && (

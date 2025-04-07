@@ -3,8 +3,8 @@ import { FaHeart, FaRegHeart, FaComment, FaEllipsisH } from "react-icons/fa";
 import "./PhotoCard.css";
 
 function PhotoCard({ photo, user }) {
-  const [liked, setLiked] = useState(photo.likes.includes(user?.id));
-  const [likesCount, setLikesCount] = useState(photo.likes.length);
+  const [likes, setLikes] = useState(photo.likes);
+  const [likesCount, setLikesCount] = useState(0);
   const [showComments, setShowComments] = useState(false);
   const [comment, setComment] = useState("");
 
@@ -66,10 +66,10 @@ function PhotoCard({ photo, user }) {
 
           <div className="photo-actions">
             <button
-              className={`action-button like-button ${liked ? "liked" : ""}`}
+              className={`action-button like-button ${likes ? "liked" : ""}`}
               onClick={handleLike}
             >
-              {liked ? <FaHeart /> : <FaRegHeart />}
+              {likes ? <FaHeart /> : <FaRegHeart />}
               <span>{likesCount}</span>
             </button>
 
@@ -78,7 +78,7 @@ function PhotoCard({ photo, user }) {
               onClick={() => setShowComments(!showComments)}
             >
               <FaComment />
-              <span>{photo.comments.length}</span>
+              <span>{0}</span>
             </button>
           </div>
         </div>
