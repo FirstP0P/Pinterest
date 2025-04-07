@@ -56,8 +56,8 @@ function PhotoCard({ photo, user }) {
       </div>
 
       <div className="photo-info">
-        <h3 className="photo-title">{photo.id}</h3>
-        <p className="photo-description">{photo.createdAt}</p>
+        <h3 className="photo-title">{photo.title}</h3>
+        <p className="photo-description">{photo.description}</p>
 
         <div className="photo-meta">
           <div className="photo-author">

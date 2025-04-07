@@ -27,6 +27,14 @@ function UploadModal({ user, onClose, onUpload }) {
 
     const formData = new FormData();
     formData.append("file", file);
+    formData.append("title", title);
+    formData.append("description", description);  
+    formData.append("userId", user?.id || "anonymous");
+    formData.append("username", user?.username || "anonymous");
+    formData.append("createdAt", new Date().toISOString());
+    formData.append("likes", JSON.stringify([]));
+    formData.append("comments", JSON.stringify([]));
+  
     
     try {
       const response = await fetch("http://localhost:5000/upload", {

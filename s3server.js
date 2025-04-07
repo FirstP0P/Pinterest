@@ -39,6 +39,8 @@ export async function uploadToS3(file, postData) {
     await s3.send(new PutObjectCommand(params));
     const fileUrl = `https://${process.env.VITE_AWS_BUCKET_NAME}.s3.${process.env.VITE_AWS_REGION}.amazonaws.com/${uniqueName}`;
 
+  //  console.log("Post data:", postData);
+
     // Insert into DynamoDB
     const postItem = {
       id: crypto.randomUUID(), // Unique post ID
@@ -51,6 +53,8 @@ export async function uploadToS3(file, postData) {
       comments: postData.comments || [],
       createdAt: new Date().toISOString(),
     };
+
+  //  console.log("Post item:", postItem);
 
     await dynamodb.send(
       new PutCommand({

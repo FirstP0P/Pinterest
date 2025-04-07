@@ -33,32 +33,6 @@ function Home({ user, isAuthenticated }) {
     fetchPosts();
   }, []);  
 
-  // const [photos, setPhotos] = useState([
-  //   // Add more sample data for better grid display
-  //   {
-  //     id: "3",
-  //     userId: "user3",
-  //     username: "travelgram",
-  //     title: "Mountain hiking",
-  //     description: "Weekend adventure in the Alps",
-  //     imageUrl: "https://images.unsplash.com/photo-1464822759023-fed622ff2c3b",
-  //     likes: ["user1", "user4"],
-  //     comments: [],
-  //     createdAt: "2025-03-27T10:00:00Z",
-  //   },
-  //   {
-  //     id: "4",
-  //     userId: "user4",
-  //     username: "foodie",
-  //     title: "Homemade pasta",
-  //     description: "First attempt at making fresh pasta from scratch",
-  //     imageUrl: "https://images.unsplash.com/photo-1556761175-b413da4baf72",
-  //     likes: ["user2"],
-  //     comments: [],
-  //     createdAt: "2025-03-26T19:15:00Z",
-  //   },
-  // ]);
-
   const handleUpload = (newPhoto) => {
 //    setPhotos([newPhoto, ...photos]);
     fetchPosts();
