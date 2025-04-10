@@ -35,7 +35,11 @@ function Profile({ user, isAuthenticated }) {
   }
 
   return (
-    <div className="home-page">
+    <div className="home-page w-full">
+      <h1 className="mb-2">{`Hello, ${user?.profile["cognito:username"]}`}</h1>
+      <h2 className="mb-5" >Your Photos</h2>
+
+
 
       { photos.length > 0 ? (<PhotoGrid photos={photos} user={user} />) : ("No photos found")};
       

@@ -38,6 +38,7 @@ const Navbar = ({ signIn, signOut }) => {
         <div className="navbar-actions">
           {auth.isAuthenticated ? (
             <>
+              <h4>{`Hello, ${auth.user?.profile["cognito:username"]} `}</h4>
               <div className="icon-button">
                 <FaBell />
               </div>
