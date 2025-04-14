@@ -3,43 +3,61 @@ import { FaHeart, FaRegHeart, FaComment, FaEllipsisH } from "react-icons/fa";
 import "./PhotoCard.css";
 
 function PhotoCard({ photo, user }) {
-  const [likes, setLikes] = useState(photo.likes);
-  const [likesCount, setLikesCount] = useState(0);
+ // const [likes, setLikes] = useState(photo.likes);
   const [showComments, setShowComments] = useState(false);
   const [comment, setComment] = useState("");
+  const [liked, setLiked] = useState(photo?.likes?.includes(user?.profile["sub"]));
+  const [likesCount, setLikesCount] = useState(photo?.likes?.length);
+  const [comments, setComments] = useState(photo?.comments || []);
 
-  const handleLike = () => {
-    if (!user) return;
+  const handleLike = async () => {
+  if (!user) return;
 
-    if (liked) {
-      setLikesCount(likesCount - 1);
-    } else {
-      setLikesCount(likesCount + 1);
-    }
-    setLiked(!liked);
+  const newLiked = !liked;
+  setLiked(newLiked);
+  setLikesCount(newLiked ? likesCount + 1 : likesCount - 1);
 
-    // Here you would call your API to update likes
-    // updateLike(photo.id, user.id, !liked);
-  };
+  try {
+    await fetch("http://localhost:5000/like", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        postId: photo.id,
+        userId: user?.profile["sub"],
+        liked: newLiked,
+      }),
+    });
+  } catch (error) {
+    console.error("Like error:", error);
+  }
+};
 
-  const handleComment = (e) => {
-    e.preventDefault();
-    if (!comment.trim() || !user) return;
+const handleComment = async (e) => {
+  e.preventDefault();
+  if (!comment.trim() || !user) return;
 
-    // Here you would call your API to add the comment
-    // addComment(photo.id, user.id, comment);
-
-    // For now, let's just update the local state
-    photo.comments.push({
-      id: Date.now().toString(),
-      userId: user?.id || "anonymous",
-      username: user?.username || "anonymous",
-      text: comment,
-      createdAt: new Date().toISOString(),
+  try {
+    const res = await fetch("http://localhost:5000/comment", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        postId: photo.id,
+        userId: user?.profile["sub"],
+        username: user?.profile["cognito:username"],
+        text: comment,
+      }),
     });
 
-    setComment("");
-  };
+    const data = await res.json();
+
+    if (data.success) {
+      setComments([...comments, data.comment]);
+      setComment("");
+    }
+  } catch (error) {
+    console.error("Comment error:", error);
+  }
+};
 
   return (
     <div className="photo-card">
@@ -66,10 +84,10 @@ function PhotoCard({ photo, user }) {
 
           <div className="photo-actions">
             <button
-              className={`action-button like-button ${likes ? "liked" : ""}`}
+              className={`action-button like-button ${likesCount ? "liked" : ""}`}
               onClick={handleLike}
             >
-              {likes ? <FaHeart /> : <FaRegHeart />}
+              {likesCount ? <FaHeart /> : <FaRegHeart />}
               <span>{likesCount}</span>
             </button>
 
@@ -78,7 +96,7 @@ function PhotoCard({ photo, user }) {
               onClick={() => setShowComments(!showComments)}
             >
               <FaComment />
-              <span>{0}</span>
+              <span>{comments?.length}</span>
             </button>
           </div>
         </div>
