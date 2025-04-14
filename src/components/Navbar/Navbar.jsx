@@ -2,7 +2,7 @@ import React from "react";
 import { useAuth } from "react-oidc-context";
 import { Link, NavLink } from "react-router-dom";
 import { FaSearch, FaBell, FaUserCircle } from "react-icons/fa";
-import "./Navbar.css";
+import "./navbar.css";
 
 const Navbar = ({ signIn, signOut }) => {
   const auth = useAuth();
