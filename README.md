@@ -1,5 +1,3 @@
-## README.md
-
 # Pinterest Clone - AWS Cloud Project
 
 A Pinterest-inspired web application built with React and deployed using AWS Amplify, featuring secure authentication, user-specific image storage, and scalable backend integrations with AWS services.
